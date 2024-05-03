@@ -197,33 +197,36 @@
             engine.resize();
         });
 
-        canvas.addEventListener('pointerdown', function(event) {
-            if (event.pointerId === 1) {
-                touchStart = new BABYLON.Vector3(event.clientX, event.clientY, 0);
-            } else if (event.pointerId === 2) {
-                var secondTouchStart = new BABYLON.Vector3(event.clientX, event.clientY, 0);
+        canvas.addEventListener('touchstart', function(event) {
+            if (event.touches.length === 2) {
+                var touch1 = event.touches[0];
+                var touch2 = event.touches[1];
+                touchStart = new BABYLON.Vector3(touch1.clientX, touch1.clientY, 0);
+                var secondTouchStart = new BABYLON.Vector3(touch2.clientX, touch2.clientY, 0);
                 initialDistance = BABYLON.Vector3.Distance(touchStart, secondTouchStart);
                 initialScale = carMesh.scaling.x;
             }
         });
-
-        canvas.addEventListener('pointermove', function(event) {
-            if (event.pointerId === 2) {
-                var secondTouchStart = new BABYLON.Vector3(event.clientX, event.clientY, 0);
+        
+        canvas.addEventListener('touchmove', function(event) {
+            if (event.touches.length === 2) {
+                var touch1 = event.touches[0];
+                var touch2 = event.touches[1];
+                touchStart = new BABYLON.Vector3(touch1.clientX, touch1.clientY, 0);
+                var secondTouchStart = new BABYLON.Vector3(touch2.clientX, touch2.clientY, 0);
                 var currentDistance = BABYLON.Vector3.Distance(touchStart, secondTouchStart);
                 var scaleFactor = currentDistance / initialDistance;
                 carMesh.scaling = new BABYLON.Vector3(initialScale * scaleFactor, initialScale * scaleFactor, initialScale * scaleFactor);
             }
         });
-
-        canvas.addEventListener('pointerup', function(event) {
-            if (event.pointerId === 1) {
-                touchStart = null;
-            } else if (event.pointerId === 2) {
+        
+        canvas.addEventListener('touchend', function(event) {
+            if (event.touches.length < 2) {
                 initialDistance = null;
                 initialScale = null;
             }
         });
+        
     });
     </script>
 </body>
