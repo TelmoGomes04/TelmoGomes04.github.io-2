@@ -197,45 +197,31 @@
             engine.resize();
         });
 
-        scene.onPointerObservable.add((pointerInfo) => {
-            switch (pointerInfo.type) {
-                case BABYLON.PointerEventTypes.POINTERDOWN:
-                    if (pointerInfo.event.pointerId === 1) {
-                        touchStart = pointerInfo.pickInfo.pickedPoint.clone();
-                    } else if (pointerInfo.event.pointerId === 2) {
-                        var secondTouchStart = pointerInfo.pickInfo.pickedPoint.clone();
-                        initialDistance = BABYLON.Vector3.Distance(touchStart, secondTouchStart);
-                        initialAngle = Math.atan2(secondTouchStart.y - touchStart.y, secondTouchStart.x - touchStart.x);
-                    }
-                    break;
-        
-                case BABYLON.PointerEventTypes.POINTERMOVE:
-                    if (pointerInfo.event.pointerId === 1) {
-                        touchStart = pointerInfo.pickInfo.pickedPoint.clone();
-                    } else if (pointerInfo.event.pointerId === 2) {
-                        var secondTouchStart = pointerInfo.pickInfo.pickedPoint.clone();
-                        if (scaling) {
-                            var currentDistance = BABYLON.Vector3.Distance(touchStart, secondTouchStart);
-                            var scaleFactor = currentDistance / initialDistance;
-                            carMesh.scaling.scaleInPlace(scaleFactor);
-                            initialDistance = currentDistance;
-                        } else if (rotation) {
-                            var currentAngle = Math.atan2(secondTouchStart.y - touchStart.y, secondTouchStart.x - touchStart.x);
-                            var angleDifference = currentAngle - initialAngle;
-                            carMesh.rotate(BABYLON.Axis.Y, angleDifference);
-                            initialAngle = currentAngle;
-                        }
-                    }
-                    break;
-        
-                case BABYLON.PointerEventTypes.POINTERUP:
-                    if (pointerInfo.event.pointerId === 1) {
-                        touchStart = null;
-                    } else if (pointerInfo.event.pointerId === 2) {
-                        initialDistance = null;
-                        initialAngle = null;
-                    }
-                    break;
+        canvas.addEventListener('pointerdown', function(event) {
+            if (event.pointerId === 1) {
+                touchStart = new BABYLON.Vector3(event.clientX, event.clientY, 0);
+            } else if (event.pointerId === 2) {
+                var secondTouchStart = new BABYLON.Vector3(event.clientX, event.clientY, 0);
+                initialDistance = BABYLON.Vector3.Distance(touchStart, secondTouchStart);
+                initialScale = carMesh.scaling.x;
+            }
+        });
+
+        canvas.addEventListener('pointermove', function(event) {
+            if (event.pointerId === 2) {
+                var secondTouchStart = new BABYLON.Vector3(event.clientX, event.clientY, 0);
+                var currentDistance = BABYLON.Vector3.Distance(touchStart, secondTouchStart);
+                var scaleFactor = currentDistance / initialDistance;
+                carMesh.scaling = new BABYLON.Vector3(initialScale * scaleFactor, initialScale * scaleFactor, initialScale * scaleFactor);
+            }
+        });
+
+        canvas.addEventListener('pointerup', function(event) {
+            if (event.pointerId === 1) {
+                touchStart = null;
+            } else if (event.pointerId === 2) {
+                initialDistance = null;
+                initialScale = null;
             }
         });
     });
