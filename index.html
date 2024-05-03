@@ -31,6 +31,8 @@
         var initialScale = null;
         var initialRotation = null;
         var planeDetected = false;
+        var initialDistance = null;
+        var initialAngle = null;
 
         var position = false ;
         var scaling = false ;
@@ -93,7 +95,7 @@
                         scaleButton.isVisible = true;
                         rotateButton.isVisible = true;
                     }
-                    
+
                 });
                 // Criar botão "Move"
                 var moveButton = BABYLON.GUI.Button.CreateSimpleButton("moveButton", "Move");
@@ -198,63 +200,41 @@
         scene.onPointerObservable.add((pointerInfo) => {
             switch (pointerInfo.type) {
                 case BABYLON.PointerEventTypes.POINTERDOWN:
-                    if (!pointerInfo.pickInfo || !pointerInfo.pickInfo.pickedPoint) {
-                        return;
-                    }
-                    // Captura o ponto onde o ponteiro foi pressionado
-                    touchStart = pointerInfo.pickInfo.pickedPoint.clone();
-                    break;
-
-                case BABYLON.PointerEventTypes.POINTERMOVE:
-                    if (!pointerInfo.pickInfo || !pointerInfo.pickInfo.pickedPoint) {
-                        return;
-                    }
-                    // Verifica se a malha do carro está visível e se houve um toque inicial
-                    if (carMesh.isVisible && touchStart) {
-                        // Calcula a diferença entre a posição atual do ponteiro e a posição inicial do toque
-                        var delta = pointerInfo.pickInfo.pickedPoint.subtract(touchStart);
-
-                        if (position) {
-                            // Move o carro na direção do movimento do ponteiro, mantendo a altura inicial
-                            carMesh.position.x += delta.x;
-                            carMesh.position.z += delta.z;
-                            carMesh.position.y = initialY;
-                        } else if (scaling) {
-                            //carMesh.scaling = new BABYLON.Vector3(1, 1, 1);
-                            var scaleIncrement = 0.005; // Valor de ajuste da escala
-                            var directiony = Math.sign(delta.y);
-                            try {
-                                var newScale = carMesh.scaling.y + (directiony * scaleIncrement);
-                                if((delta.y == delta.y) && (newScale >= 0.2 && newScale <= 0.8)){
-                                    carMesh.scaling = new BABYLON.Vector3(newScale, newScale, newScale);
-                                }
-                                
-                            } catch (error) {
-                                console.error("Erro na aplicação da escala:", error);
-                            }
-                        } else if (rotation) {
-                            var rotationIncrement = 1;  // Valor de ajuste da rotação
-                            var directionx = Math.tanh(delta.x);
-                            try {
-                                // Ajustar a rotação ao redor do eixo Y com base no movimento horizontal 
-                                if (delta.x == delta.x) {
-                                    carMesh.rotate(BABYLON.Axis.Y, directionx * rotationIncrement);
-                                }
-                            } catch (error) {
-                                console.error("Erro na aplicação da rotação:", error);
-                            }
-
-                        } else {
-                            console.log("Default");
-                        }
-                        
-                        // Atualiza o ponto inicial do toque para o ponto atual do ponteiro
+                    if (pointerInfo.event.pointerId === 1) {
                         touchStart = pointerInfo.pickInfo.pickedPoint.clone();
+                    } else if (pointerInfo.event.pointerId === 2) {
+                        var secondTouchStart = pointerInfo.pickInfo.pickedPoint.clone();
+                        initialDistance = BABYLON.Vector3.Distance(touchStart, secondTouchStart);
+                        initialAngle = Math.atan2(secondTouchStart.y - touchStart.y, secondTouchStart.x - touchStart.x);
                     }
                     break;
-
+        
+                case BABYLON.PointerEventTypes.POINTERMOVE:
+                    if (pointerInfo.event.pointerId === 1) {
+                        touchStart = pointerInfo.pickInfo.pickedPoint.clone();
+                    } else if (pointerInfo.event.pointerId === 2) {
+                        var secondTouchStart = pointerInfo.pickInfo.pickedPoint.clone();
+                        if (scaling) {
+                            var currentDistance = BABYLON.Vector3.Distance(touchStart, secondTouchStart);
+                            var scaleFactor = currentDistance / initialDistance;
+                            carMesh.scaling.scaleInPlace(scaleFactor);
+                            initialDistance = currentDistance;
+                        } else if (rotation) {
+                            var currentAngle = Math.atan2(secondTouchStart.y - touchStart.y, secondTouchStart.x - touchStart.x);
+                            var angleDifference = currentAngle - initialAngle;
+                            carMesh.rotate(BABYLON.Axis.Y, angleDifference);
+                            initialAngle = currentAngle;
+                        }
+                    }
+                    break;
+        
                 case BABYLON.PointerEventTypes.POINTERUP:
-                    // Lidar com ação quando o botão do ponteiro é solto 
+                    if (pointerInfo.event.pointerId === 1) {
+                        touchStart = null;
+                    } else if (pointerInfo.event.pointerId === 2) {
+                        initialDistance = null;
+                        initialAngle = null;
+                    }
                     break;
             }
         });
