@@ -47,6 +47,8 @@
 
             var light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
             light.intensity = 0.7;
+            var light2 = new BABYLON.HemisphericLight2("hemisphericLight2", new BABYLON.Vector3(0, 1, 0), scene);
+            light2.intensity = 0.5;
 
             var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
 
@@ -62,6 +64,7 @@
 
             function loadCarMesh(scene) {
                 BABYLON.SceneLoader.ImportMesh("", "media/gltf/F3_Car/", "scene.gltf", scene, function (loadedMeshes) {
+                    loadedMeshes.isVisible = false;
                     carMesh = loadedMeshes[0]; // Assumindo que a mesh do carro está no índice 0
                     carMesh.isVisible = false; // Inicialmente ocultar a mesh
                     carMesh.scaling = new BABYLON.Vector3(0.3, 0.3, 0.3); // Definir escala desejada
@@ -89,11 +92,11 @@
                     if (!planeDetected && results.length > 0 && carMesh && !carMesh.isVisible) {
                         // Plane detection bem-sucedido, exiba a mesh do carro no plano detectado
                         var hitResult = results[0];
-                        carMesh.isVisible = true;
+                        carMesh.position.y = initialY;
                         carMesh.position = hitResult.transformationMatrix.getTranslation();
+                        carMesh.isVisible = true;
                         // Outras configurações necessárias após o plane detection
                         planeDetected = true; // Marque o plane detection como concluído 
-                        carMesh.position.y = initialY;
                         moveButton.isVisible = true;
                         scaleButton.isVisible = true;
                         rotateButton.isVisible = true;
