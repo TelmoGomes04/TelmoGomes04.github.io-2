@@ -75,7 +75,12 @@
                     // Adicione estas linhas após carregar a malha do carro
                     carMesh.occlusionType = BABYLON.AbstractMesh.OCCLUSION_TYPE_OPTIMISTIC;
                     carMesh.isOccluded = true;
+
+                    console.log(carMesh); // Verificar se carMesh está definido
+                    console.log(carMesh.materials); // Verificar quais materiais estão disponíveis
+                    console.log(carMesh.materials["paint"]); // Verificar se o material "paint" existe
                 },
+
                 // Função de progresso
                 function (event) {
                     if(event.total == 0){
@@ -109,9 +114,7 @@
                         rotateButton.isVisible = true;
                         colorButton.isVisible = true;
 
-                        console.log(carMesh); // Verificar se carMesh está definido
-                        console.log(carMesh.materials); // Verificar quais materiais estão disponíveis
-                        console.log(carMesh.materials["paint"]); // Verificar se o material "paint" existe
+                        
                     }
                     
                 });
