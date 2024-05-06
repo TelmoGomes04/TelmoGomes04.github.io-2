@@ -111,6 +111,9 @@
                     }
                     
                 });
+                console.log(carMesh); // Verificar se carMesh está definido
+                console.log(carMesh.materials); // Verificar quais materiais estão disponíveis
+                console.log(carMesh.materials["paint"]); // Verificar se o material "paint" existe
                 // Criar botão "Move"
                 var moveButton = BABYLON.GUI.Button.CreateSimpleButton("moveButton", "Move");
                 moveButton.width = "120px";
