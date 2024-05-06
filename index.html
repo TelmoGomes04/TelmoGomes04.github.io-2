@@ -212,56 +212,52 @@
             engine.resize();
         });
 
+        // Variáveis para rastrear os pontos de toque
+        let initialDistance = null;
+        let initialScale = null;
+        let touchStart = null;
 
-        let touch1 = null;
-        let touch2 = null;
-
+        // Evento de ponteiro para rastrear toques
         scene.onPointerObservable.add((pointerInfo) => {
             switch (pointerInfo.type) {
                 case BABYLON.PointerEventTypes.POINTERDOWN:
-                    if (!touch1) {
-                        touch1 = pointerInfo;
-                    } else if (!touch2) {
-                        touch2 = pointerInfo;
+                    // Quando dois dedos tocam a tela, calculamos a distância inicial entre eles
+                    if (scene.pointerDownPredicate(scene.activePointer)) {
+                        const pointers = scene.pointerEvent.pointerId;
+                        if (pointers.length === 2) {
+                            const pointer1 = scene.getPointerById(pointers[0]);
+                            const pointer2 = scene.getPointerById(pointers[1]);
+                            initialDistance = BABYLON.Vector2.Distance(pointer1, pointer2);
+                            initialScale = carMesh.scaling.x;
+                        }
                     }
                     // Captura o ponto onde o ponteiro foi pressionado
+                    if (!pointerInfo.pickInfo || !pointerInfo.pickInfo.pickedPoint) {
+                        return;
+                    }
                     touchStart = pointerInfo.pickInfo.pickedPoint.clone();
                     break;
 
                 case BABYLON.PointerEventTypes.POINTERMOVE:
-                    if (!pointerInfo.pickInfo || !pointerInfo.pickInfo.pickedPoint) {
-                        return;
+                    // Quando os dedos se movem, ajustamos a escala do objeto com base na mudança na distância entre os dedos
+                    if (initialDistance && initialScale) {
+                        const pointers = scene.pointerEvent.pointerId;
+                        if (pointers.length === 2) {
+                            const pointer1 = scene.getPointerById(pointers[0]);
+                            const pointer2 = scene.getPointerById(pointers[1]);
+                            const currentDistance = BABYLON.Vector2.Distance(pointer1, pointer2);
+                            const factor = currentDistance / initialDistance;
+                            carMesh.scaling = initialScale.scale(factor);
+                        }
                     }
-                    // Verifica se a malha do carro está visível e se houve um toque inicial
-                    if (carMesh.isVisible && touchStart) {
-                        // Calcula a diferença entre a posição atual do ponteiro e a posição inicial do toque
+                    // Verifica se há um toque para calcular a diferença entre a posição atual do ponteiro e a posição inicial do toque
+                    if (touchStart) {
                         var delta = pointerInfo.pickInfo.pickedPoint.subtract(touchStart);
-
                         if (position) {
                             // Move o carro na direção do movimento do ponteiro, mantendo a altura inicial
                             carMesh.position.x += delta.x;
                             carMesh.position.z += delta.z;
                             carMesh.position.y = initialY;
-                        } else if (scaling) {
-                            if (touch1 && touch2) {
-                                const distStart = BABYLON.Vector3.Distance(touch1.pickInfo.pickedPoint, touch2.pickInfo.pickedPoint);
-                                const distNow = BABYLON.Vector3.Distance(pointerInfo.pickInfo.pickedPoint, touch2.pickInfo.pickedPoint);
-                
-                                const scaleIncrement = 0.005; // Valor de ajuste da escala
-                
-                                // Determina a direção do gesto de pinça
-                                const pinchDirection = Math.sign(distNow - distStart);
-                
-                                try {
-                                    const newScale = carMesh.scaling.y + (pinchDirection * scaleIncrement);
-                
-                                    // Limita a escala dentro de um intervalo específico
-                                    if (newScale >= 0.2 && newScale <= 0.8) {
-                                        carMesh.scaling = new BABYLON.Vector3(newScale, newScale, newScale);
-                                    }
-                                } catch (error) {
-                                    console.error("Erro na aplicação da escala:", error);
-                                }
                         } else if (rotation) {
                             var rotationIncrement = 1;  // Valor de ajuste da rotação
                             var directionx = Math.tanh(delta.x);
@@ -273,17 +269,21 @@
                             } catch (error) {
                                 console.error("Erro na aplicação da rotação:", error);
                             }
-
-                        } else {
-                            console.log("Default");
                         }
-                        
                         // Atualiza o ponto inicial do toque para o ponto atual do ponteiro
                         touchStart = pointerInfo.pickInfo.pickedPoint.clone();
                     }
                     break;
+
+                case BABYLON.PointerEventTypes.POINTERUP:
+                    // Quando os dedos são levantados, resetamos as variáveis
+                    initialDistance = null;
+                    initialScale = null;
+                    touchStart = null;
+                    break;
             }
-        }});
+        });
+
     });
     </script>
 </body>
