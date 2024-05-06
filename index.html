@@ -219,7 +219,9 @@
                     var object = scene.getMeshByName("object_113");
 
                     const myMaterial = new BABYLON.StandardMaterial("myMaterial", object); 
-                    myMaterial.specularColor = new BABYLON.Color3(0.5, 0.6, 0.87);
+                    //myMaterial.specularColor = new BABYLON.Color3(0.5, 0.6, 0.87);
+                    myMaterial.diffuseColor = new BABYLON.Color3(0.5, 0.6, 0.87);
+
 
                     object.material = myMaterial;  
                 });
