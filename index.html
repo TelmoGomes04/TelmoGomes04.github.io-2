@@ -198,7 +198,7 @@
                 advancedTexture.addControl(rotateButton);  
 
 
-                // Criar botão "Coler change"
+                // Criar botão "Color change"
                 var colorButton = BABYLON.GUI.Button.CreateSimpleButton("ColorButton", "Color");
                 colorButton.width = "120px";
                 colorButton.height = "120px";
@@ -207,7 +207,7 @@
                 colorButton.background = "gray";
                 colorButton.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM; // Alinhamento vertical no fundo
                 colorButton.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER; // Alinhamento horizontal no centro
-                colorButton.left = "140px"; // Distância do botão "Scale"
+                colorButton.left = "240px"; // Distância do botão "Scale"
                 colorButton.top = "-20px";
                 colorButton.isVisible = false;
                 colorButton.onPointerUpObservable.add(function() {
@@ -236,7 +236,7 @@
                             break;
                     }
                 });
-                advancedTexture.addControl(rotateButton);  
+                advancedTexture.addControl(colorButton);  
             });
 
             return scene;
