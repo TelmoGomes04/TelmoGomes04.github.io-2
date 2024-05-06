@@ -35,6 +35,7 @@
         var position = false ;
         var scaling = false ;
         var rotation = false ;
+        var color = 0;
 
         var canvas = document.getElementById("renderCanvas");
         var engine = new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true });
@@ -154,7 +155,7 @@
                     scaling = !scaling;
                     position = false;
                     rotation = false;
-                    console.log("Position :",scaling);
+                    console.log("Scaling :",scaling);
                     if(scaling) {
                         scaleButton.background = "green";
                         moveButton.background = "gray";
@@ -183,7 +184,7 @@
                     rotation = !rotation;
                     position = false;
                     scaling = false;
-                    console.log("Position :",rotation);
+                    console.log("Rotation :",rotation);
                     if(rotation) {
                         rotateButton.background = "green";
                         moveButton.background = "gray";
@@ -192,6 +193,47 @@
                         scaling = false;
                     } else {
                         rotateButton.background = "gray";
+                    }
+                });
+                advancedTexture.addControl(rotateButton);  
+
+
+                // Criar botão "Coler change"
+                var colorButton = BABYLON.GUI.Button.CreateSimpleButton("rotateButton", "Color");
+                colorButton.width = "120px";
+                colorButton.height = "120px";
+                colorButton.color = "black";
+                colorButton.cornerRadius = 20;
+                colorButton.background = "gray";
+                colorButton.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM; // Alinhamento vertical no fundo
+                colorButton.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER; // Alinhamento horizontal no centro
+                colorButton.left = "260px"; // Distância do botão "Scale"
+                colorButton.top = "-20px";
+                colorButton.isVisible = false;
+                colorButton.onPointerUpObservable.add(function() {
+                    var paintMaterial = carMesh.materials["paint"];
+                    var originalColor = paintMaterial.albedoColor.clone();
+                    color++;
+                    switch(color){
+                        case 0:
+                            paintMaterial.albedoColor = originalColor;
+                            break;
+                        case 1:
+                            //azul
+                            paintMaterial.albedoColor = new BABYLON.Color3(0, 0, 1);
+                            break;
+                        case 2:
+                            //amarelo
+                            paintMaterial.albedoColor = new BABYLON.Color3(1, 1, 0);
+                            break;
+                        case 3:
+                            //verde
+                            paintMaterial.albedoColor = new BABYLON.Color3(0, 1, 0);
+                            break;
+                        case 4:
+                            //cinzento
+                            paintMaterial.albedoColor = new BABYLON.Color3(0.5, 0.5, 0.5);
+                            break;
                     }
                 });
                 advancedTexture.addControl(rotateButton);  
@@ -221,44 +263,40 @@
         scene.onPointerObservable.add((pointerInfo) => {
             switch (pointerInfo.type) {
                 case BABYLON.PointerEventTypes.POINTERDOWN:
-                    // Quando dois dedos tocam a tela, calculamos a distância inicial entre eles
-                    if (!pointer1Id) {
-                        pointer1Id = pointerInfo.pointerId;
-                    } else if (!pointer2Id) {
-                        pointer2Id = pointerInfo.pointerId;
-                    }
-                    if (pointer1Id && pointer2Id) {
-                        const pointer1 = scene.getPointerById(pointer1Id);
-                        const pointer2 = scene.getPointerById(pointer2Id);
-                        initialDistance = BABYLON.Vector2.Distance(pointer1, pointer2);
-                        initialScale = carMesh.scaling.x;
-                    }
-                    // Captura o ponto onde o ponteiro foi pressionado
                     if (!pointerInfo.pickInfo || !pointerInfo.pickInfo.pickedPoint) {
                         return;
                     }
+                    // Captura o ponto onde o ponteiro foi pressionado
                     touchStart = pointerInfo.pickInfo.pickedPoint.clone();
                     break;
-        
+
                 case BABYLON.PointerEventTypes.POINTERMOVE:
-                    // Quando os dedos se movem, ajustamos a escala do objeto com base na mudança na distância entre os dedos
-                    if (initialDistance && initialScale) {
-                        const pointer1 = scene.getPointerById(pointer1Id);
-                        const pointer2 = scene.getPointerById(pointer2Id);
-                        if (pointer1 && pointer2) {
-                            const currentDistance = BABYLON.Vector2.Distance(pointer1, pointer2);
-                            const factor = currentDistance / initialDistance;
-                            carMesh.scaling = initialScale.scale(factor);
-                        }
+                    if (!pointerInfo.pickInfo || !pointerInfo.pickInfo.pickedPoint) {
+                        return;
                     }
-                    // Verifica se há um toque para calcular a diferença entre a posição atual do ponteiro e a posição inicial do toque
-                    if (touchStart) {
+                    // Verifica se a malha do carro está visível e se houve um toque inicial
+                    if (carMesh.isVisible && touchStart) {
+                        // Calcula a diferença entre a posição atual do ponteiro e a posição inicial do toque
                         var delta = pointerInfo.pickInfo.pickedPoint.subtract(touchStart);
+
                         if (position) {
                             // Move o carro na direção do movimento do ponteiro, mantendo a altura inicial
                             carMesh.position.x += delta.x;
                             carMesh.position.z += delta.z;
                             carMesh.position.y = initialY;
+                        } else if (scaling) {
+                            //carMesh.scaling = new BABYLON.Vector3(1, 1, 1);
+                            var scaleIncrement = 0.005; // Valor de ajuste da escala
+                            var directiony = Math.sign(delta.y);
+                            try {
+                                var newScale = carMesh.scaling.y + (directiony * scaleIncrement);
+                                if((delta.y == delta.y) && (newScale >= 0.2 && newScale <= 0.8)){
+                                    carMesh.scaling = new BABYLON.Vector3(newScale, newScale, newScale);
+                                }
+                                
+                            } catch (error) {
+                                console.error("Erro na aplicação da escala:", error);
+                            }
                         } else if (rotation) {
                             var rotationIncrement = 1;  // Valor de ajuste da rotação
                             var directionx = Math.tanh(delta.x);
@@ -270,24 +308,18 @@
                             } catch (error) {
                                 console.error("Erro na aplicação da rotação:", error);
                             }
+
+                        } else {
+                            console.log("Default");
                         }
+                        
                         // Atualiza o ponto inicial do toque para o ponto atual do ponteiro
                         touchStart = pointerInfo.pickInfo.pickedPoint.clone();
                     }
                     break;
-        
+
                 case BABYLON.PointerEventTypes.POINTERUP:
-                    // Quando os dedos são levantados, resetamos as variáveis
-                    if (pointerInfo.pointerId === pointer1Id) {
-                        pointer1Id = null;
-                    } else if (pointerInfo.pointerId === pointer2Id) {
-                        pointer2Id = null;
-                    }
-                    if (!pointer1Id || !pointer2Id) {
-                        initialDistance = null;
-                        initialScale = null;
-                    }
-                    touchStart = null;
+                    // Lidar com ação quando o botão do ponteiro é solto 
                     break;
             }
         });
