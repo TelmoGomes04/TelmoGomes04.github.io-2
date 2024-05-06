@@ -212,11 +212,17 @@
             engine.resize();
         });
 
+
+        let touch1 = null;
+        let touch2 = null;
+
         scene.onPointerObservable.add((pointerInfo) => {
             switch (pointerInfo.type) {
                 case BABYLON.PointerEventTypes.POINTERDOWN:
-                    if (!pointerInfo.pickInfo || !pointerInfo.pickInfo.pickedPoint) {
-                        return;
+                    if (!touch1) {
+                        touch1 = pointerInfo;
+                    } else if (!touch2) {
+                        touch2 = pointerInfo;
                     }
                     // Captura o ponto onde o ponteiro foi pressionado
                     touchStart = pointerInfo.pickInfo.pickedPoint.clone();
@@ -237,18 +243,25 @@
                             carMesh.position.z += delta.z;
                             carMesh.position.y = initialY;
                         } else if (scaling) {
-                            //carMesh.scaling = new BABYLON.Vector3(1, 1, 1);
-                            var scaleIncrement = 0.005; // Valor de ajuste da escala
-                            var directiony = Math.sign(delta.y);
-                            try {
-                                var newScale = carMesh.scaling.y + (directiony * scaleIncrement);
-                                if((delta.y == delta.y) && (newScale >= 0.2 && newScale <= 0.8)){
-                                    carMesh.scaling = new BABYLON.Vector3(newScale, newScale, newScale);
+                            if (touch1 && touch2) {
+                                const distStart = BABYLON.Vector3.Distance(touch1.pickInfo.pickedPoint, touch2.pickInfo.pickedPoint);
+                                const distNow = BABYLON.Vector3.Distance(pointerInfo.pickInfo.pickedPoint, touch2.pickInfo.pickedPoint);
+                
+                                const scaleIncrement = 0.005; // Valor de ajuste da escala
+                
+                                // Determina a direção do gesto de pinça
+                                const pinchDirection = Math.sign(distNow - distStart);
+                
+                                try {
+                                    const newScale = carMesh.scaling.y + (pinchDirection * scaleIncrement);
+                
+                                    // Limita a escala dentro de um intervalo específico
+                                    if (newScale >= 0.2 && newScale <= 0.8) {
+                                        carMesh.scaling = new BABYLON.Vector3(newScale, newScale, newScale);
+                                    }
+                                } catch (error) {
+                                    console.error("Erro na aplicação da escala:", error);
                                 }
-                                
-                            } catch (error) {
-                                console.error("Erro na aplicação da escala:", error);
-                            }
                         } else if (rotation) {
                             var rotationIncrement = 1;  // Valor de ajuste da rotação
                             var directionx = Math.tanh(delta.x);
@@ -269,12 +282,8 @@
                         touchStart = pointerInfo.pickInfo.pickedPoint.clone();
                     }
                     break;
-
-                case BABYLON.PointerEventTypes.POINTERUP:
-                    // Lidar com ação quando o botão do ponteiro é solto 
-                    break;
             }
-        });
+        }});
     });
     </script>
 </body>
