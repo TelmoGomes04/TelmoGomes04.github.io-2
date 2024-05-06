@@ -199,7 +199,7 @@
 
 
                 // Criar botão "Coler change"
-                var colorButton = BABYLON.GUI.Button.CreateSimpleButton("rotateButton", "Color");
+                var colorButton = BABYLON.GUI.Button.CreateSimpleButton("ColorButton", "Color");
                 colorButton.width = "120px";
                 colorButton.height = "120px";
                 colorButton.color = "black";
@@ -207,7 +207,7 @@
                 colorButton.background = "gray";
                 colorButton.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM; // Alinhamento vertical no fundo
                 colorButton.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER; // Alinhamento horizontal no centro
-                colorButton.left = "200px"; // Distância do botão "Scale"
+                colorButton.left = "160px"; // Distância do botão "Scale"
                 colorButton.top = "-20px";
                 colorButton.isVisible = false;
                 colorButton.onPointerUpObservable.add(function() {
@@ -290,7 +290,7 @@
                             var directiony = Math.sign(delta.y);
                             try {
                                 var newScale = carMesh.scaling.y + (directiony * scaleIncrement);
-                                if((delta.y == delta.y) && (newScale >= 0.2 && newScale <= 0.8)){
+                                if((delta.y == delta.y) && (newScale >= 0.2 && newScale <= 1.8)){
                                     carMesh.scaling = new BABYLON.Vector3(newScale, newScale, newScale);
                                 }
                                 
