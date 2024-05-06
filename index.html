@@ -46,10 +46,10 @@
             camera.setTarget(BABYLON.Vector3.Zero());
 
             var light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
-            light.intensity = 0.7;
+            light.intensity = 0.9;
 
             var light2 = new BABYLON.HemisphericLight("hemisphericLight2", new BABYLON.Vector3(0, 1, 0), scene);
-            light2.intensity = 0.5;
+            light2.intensity = 0.7;
 
             var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
 
@@ -119,7 +119,7 @@
                 moveButton.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM; // Alinhamento vertical no fundo
                 moveButton.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER; // Alinhamento horizontal no centro
                 moveButton.left = "-120px";
-                moveButton.top = "-20px";
+                moveButton.top = "20px";
                 moveButton.isVisible = false;
                 moveButton.onPointerUpObservable.add(function() {
                     position = !position;
@@ -148,7 +148,7 @@
                 scaleButton.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM; // Alinhamento vertical no fundo
                 scaleButton.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER; // Alinhamento horizontal no centro
                 //scaleButton.left = "0px";
-                moveButton.top = "20px";
+                scaleButton.top = "20px";
                 scaleButton.isVisible = false;
                 scaleButton.onPointerUpObservable.add(function() {
                     scaling = !scaling;
@@ -177,7 +177,7 @@
                 rotateButton.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM; // Alinhamento vertical no fundo
                 rotateButton.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER; // Alinhamento horizontal no centro
                 rotateButton.left = "120px"; // Distância do botão "Scale"
-                moveButton.top = "20px";
+                rotateButton.top = "20px";
                 rotateButton.isVisible = false;
                 rotateButton.onPointerUpObservable.add(function() {
                     rotation = !rotation;
