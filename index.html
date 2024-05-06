@@ -215,30 +215,9 @@
                 colorButton.top = "-20px";
                 colorButton.isVisible = false;
                 colorButton.onPointerUpObservable.add(function() {
-                    var paintMaterial = carMesh.material["paint"];
-                    var originalColor = paintMaterial.albedoColor.clone();
-                    color++;
-                    switch(color){
-                        case 1:
-                            //azul
-                            paintMaterial.albedoColor = new BABYLON.Color3(0, 0, 1);
-                        break;
-                        case 2:
-                            //amarelo
-                            paintMaterial.albedoColor = new BABYLON.Color3(1, 1, 0);
-                        break;
-                        case 3:
-                            //verde
-                            paintMaterial.albedoColor = new BABYLON.Color3(0, 1, 0);
-                        break;
-                        case 4:
-                            //cinzento
-                            paintMaterial.albedoColor = new BABYLON.Color3(0.5, 0.5, 0.5);
-                        break;
-                        default:
-                        paintMaterial.albedoColor = originalColor;
-                        color = 0; // resetar a cor
-                        break;
+                    var paintMaterial = carMesh.material.subMaterials.find(m => m.name === "paint");
+                    if (paintMaterial) {
+                        paintMaterial.albedoColor = new BABYLON.Color3(0.5, 0.5, 0.5);
                     }
                 });
                 advancedTexture.addControl(colorButton);  
