@@ -208,7 +208,7 @@
                 colorButton.background = "gray";
                 colorButton.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM; // Alinhamento vertical no fundo
                 colorButton.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER; // Alinhamento horizontal no centro
-                colorButton.left = "280px"; // Distância do botão "Scale"
+                colorButton.left = "80px"; // Distância do botão "Scale"
                 colorButton.top = "-20px";
                 colorButton.isVisible = false;
                 colorButton.onPointerUpObservable.add(function() {
@@ -216,9 +216,6 @@
                     var originalColor = paintMaterial.albedoColor.clone();
                     color++;
                     switch(color){
-                        case 0:
-                            paintMaterial.albedoColor = originalColor;
-                            break;
                         case 1:
                             //azul
                             paintMaterial.albedoColor = new BABYLON.Color3(0, 0, 1);
@@ -235,6 +232,10 @@
                             //cinzento
                             paintMaterial.albedoColor = new BABYLON.Color3(0.5, 0.5, 0.5);
                             break;
+                        default:
+                        paintMaterial.albedoColor = originalColor;
+                        color = 0; // resetar a cor
+                        break;
                     }
                 });
                 advancedTexture.addControl(colorButton);  
