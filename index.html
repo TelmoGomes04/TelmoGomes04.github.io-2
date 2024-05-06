@@ -215,8 +215,11 @@
                 colorButton.top = "-20px";
                 colorButton.isVisible = false;
                 colorButton.onPointerUpObservable.add(function() {
-                    if (carMesh) {
-                        carMesh.material.albedoColor = new BABYLON.Color3(0.5, 0.5, 0.5);
+                    if (carMesh && carMesh.material && carMesh.material.subMaterials) {
+                        var paintMaterial = carMesh.material.subMaterials.find(m => m.name === "paint");
+                        if (paintMaterial) {
+                            paintMaterial.albedoColor = new BABYLON.Color3(0.5, 0.5, 0.5);
+                        }
                     }
                 });
                 advancedTexture.addControl(colorButton);  
