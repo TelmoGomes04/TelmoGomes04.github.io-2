@@ -111,15 +111,15 @@
                 });
                 // Criar botão "Move"
                 var moveButton = BABYLON.GUI.Button.CreateSimpleButton("moveButton", "Move");
-                moveButton.width = "110px";
-                moveButton.height = "110px";
+                moveButton.width = "120px";
+                moveButton.height = "120px";
                 moveButton.color = "black";
                 moveButton.cornerRadius = 20;
                 moveButton.background = "gray";
                 moveButton.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM; // Alinhamento vertical no fundo
                 moveButton.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER; // Alinhamento horizontal no centro
-                moveButton.left = "-120px";
-                moveButton.top = "20px";
+                moveButton.left = "-130px";
+                moveButton.top = "-20px";
                 moveButton.isVisible = false;
                 moveButton.onPointerUpObservable.add(function() {
                     position = !position;
@@ -140,15 +140,15 @@
 
                 // Criar botão "Scale"
                 var scaleButton = BABYLON.GUI.Button.CreateSimpleButton("scaleButton", "Scale");
-                scaleButton.width = "110px";
-                scaleButton.height = "110px";
+                scaleButton.width = "120px";
+                scaleButton.height = "120px";
                 scaleButton.color = "black";
                 scaleButton.cornerRadius = 20;
                 scaleButton.background = "gray";
                 scaleButton.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM; // Alinhamento vertical no fundo
                 scaleButton.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER; // Alinhamento horizontal no centro
                 //scaleButton.left = "0px";
-                scaleButton.top = "20px";
+                scaleButton.top = "-20px";
                 scaleButton.isVisible = false;
                 scaleButton.onPointerUpObservable.add(function() {
                     scaling = !scaling;
@@ -169,15 +169,15 @@
 
                 // Criar botão "Rotate"
                 var rotateButton = BABYLON.GUI.Button.CreateSimpleButton("rotateButton", "Rotate");
-                rotateButton.width = "110px";
-                rotateButton.height = "110px";
+                rotateButton.width = "120px";
+                rotateButton.height = "120px";
                 rotateButton.color = "black";
                 rotateButton.cornerRadius = 20;
                 rotateButton.background = "gray";
                 rotateButton.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM; // Alinhamento vertical no fundo
                 rotateButton.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER; // Alinhamento horizontal no centro
-                rotateButton.left = "120px"; // Distância do botão "Scale"
-                rotateButton.top = "20px";
+                rotateButton.left = "130px"; // Distância do botão "Scale"
+                rotateButton.top = "-20px";
                 rotateButton.isVisible = false;
                 rotateButton.onPointerUpObservable.add(function() {
                     rotation = !rotation;
