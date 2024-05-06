@@ -216,13 +216,12 @@
                 colorButton.isVisible = false;
                 colorButton.onPointerUpObservable.add(function() {
                     // Obtenha a cena e a mesh
-                    var scene = carMesh.getScene();
                     var object = scene.getMeshByName("object_113");
-                
-                    // Altere a cor do material
-                    object.material.albedoColor = new BABYLON.Color3(0.5, 0.5, 0.5); // Define a cor difusa (principal) do material
-                    // Outros ajustes de material (opcional)
-                            
+
+                    const myMaterial = new BABYLON.StandardMaterial("myMaterial", scene);
+                    myMaterial.specularColor = new BABYLON.Color3(0.5, 0.6, 0.87);
+
+                    object.material = myMaterial;  
                 });
                 advancedTexture.addControl(colorButton);  
             });
