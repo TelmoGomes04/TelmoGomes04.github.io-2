@@ -215,7 +215,7 @@
                 colorButton.top = "-20px";
                 colorButton.isVisible = false;
                 colorButton.onPointerUpObservable.add(function() {
-                    if (carMesh && carMesh.material) {
+                    if (carMesh) {
                         carMesh.material.albedoColor = new BABYLON.Color3(0.5, 0.5, 0.5);
                     }
                 });
