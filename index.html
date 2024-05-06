@@ -77,7 +77,12 @@
                 },
                 // Função de progresso
                 function (event) {
-                    loadingText.text = "Loading: " + (event.loaded * 100 / event.total).toFixed() + "%";
+                    if(event.total == 0){
+                        loadingText.text = "Loading: 0%";
+                    }else{
+                        var percentagem = (event.loaded * 100 / event.total).toFixed();
+                        loadingText.text = "Loading: " + percentagem + "%";
+                    }
                 });
                 
             }
@@ -93,9 +98,9 @@
                     if (!planeDetected && results.length > 0 && carMesh && !carMesh.isVisible) {
                         // Plane detection bem-sucedido, exiba a mesh do carro no plano detectado
                         var hitResult = results[0];
-                        carMesh.position.y = initialY;
                         carMesh.position = hitResult.transformationMatrix.getTranslation();
                         carMesh.isVisible = true;
+                        carMesh.position.y = initialY;
                         // Outras configurações necessárias após o plane detection
                         planeDetected = true; // Marque o plane detection como concluído 
                         moveButton.isVisible = true;
@@ -114,6 +119,7 @@
                 moveButton.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM; // Alinhamento vertical no fundo
                 moveButton.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER; // Alinhamento horizontal no centro
                 moveButton.left = "-120px";
+                moveButton.top = "20px";
                 moveButton.isVisible = false;
                 moveButton.onPointerUpObservable.add(function() {
                     position = !position;
@@ -142,6 +148,7 @@
                 scaleButton.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM; // Alinhamento vertical no fundo
                 scaleButton.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER; // Alinhamento horizontal no centro
                 //scaleButton.left = "0px";
+                moveButton.top = "20px";
                 scaleButton.isVisible = false;
                 scaleButton.onPointerUpObservable.add(function() {
                     scaling = !scaling;
@@ -170,6 +177,7 @@
                 rotateButton.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM; // Alinhamento vertical no fundo
                 rotateButton.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER; // Alinhamento horizontal no centro
                 rotateButton.left = "120px"; // Distância do botão "Scale"
+                moveButton.top = "20px";
                 rotateButton.isVisible = false;
                 rotateButton.onPointerUpObservable.add(function() {
                     rotation = !rotation;
