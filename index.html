@@ -215,10 +215,28 @@
                 colorButton.top = "-20px";
                 colorButton.isVisible = false;
                 colorButton.onPointerUpObservable.add(function() {
+                    // Obtenha a cena e a mesh
                     var scene = carMesh.getScene();
                     var object = scene.getMeshByName("object_113");
-                    if (object && object.material) {
-                        object.material.albedoColor = new BABYLON.Color3(0.5, 0.5, 0.5);
+                
+                    if (object) {
+                        // Verifique se a mesh tem um material atribuído
+                        if (object.material) {
+                            // Verifique se o material é um StandardMaterial
+                            if (object.material instanceof BABYLON.StandardMaterial) {
+                                // Altere a cor do material
+                                object.material.diffuseColor = new BABYLON.Color3(0.5, 0.5, 0.5); // Define a cor difusa (principal) do material
+                                object.material.specularColor = new BABYLON.Color3(0, 0, 0); // Define a cor especular (brilho) do material
+                                object.material.emissiveColor = new BABYLON.Color3(0, 0, 0); // Define a cor emissiva (auto-iluminada) do material
+                                // Outros ajustes de material (opcional)
+                            } else {
+                                console.warn("O material não é um StandardMaterial. Certifique-se de que o tipo de material seja adequado para alteração de cor.");
+                            }
+                        } else {
+                            console.warn("A mesh não tem um material atribuído.");
+                        }
+                    } else {
+                        console.warn("Não foi possível encontrar a mesh com o nome 'object_113'. Verifique se o nome da mesh está correto.");
                     }
                 });
                 advancedTexture.addControl(colorButton);  
