@@ -207,7 +207,7 @@
                 colorButton.background = "gray";
                 colorButton.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM; // Alinhamento vertical no fundo
                 colorButton.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER; // Alinhamento horizontal no centro
-                colorButton.left = "260px"; // Distância do botão "Scale"
+                colorButton.left = "200px"; // Distância do botão "Scale"
                 colorButton.top = "-20px";
                 colorButton.isVisible = false;
                 colorButton.onPointerUpObservable.add(function() {
@@ -303,7 +303,7 @@
                             try {
                                 // Ajustar a rotação ao redor do eixo Y com base no movimento horizontal 
                                 if (delta.x == delta.x) {
-                                    carMesh.rotate(BABYLON.Axis.Y, directionx * rotationIncrement);
+                                    carMesh.rotate(BABYLON.Axis.Y, -directionx * rotationIncrement);
                                 }
                             } catch (error) {
                                 console.error("Erro na aplicação da rotação:", error);
